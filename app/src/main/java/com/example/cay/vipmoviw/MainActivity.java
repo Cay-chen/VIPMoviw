@@ -12,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.cay.vipmoviw.databinding.ActivityMainBinding;
+import com.example.cay.vipmoviw.ui.menu.NavAboutActivity;
+import com.example.cay.vipmoviw.ui.menu.NavDeedBackActivity;
+import com.example.cay.vipmoviw.ui.menu.NavDownloadActivity;
+import com.example.cay.vipmoviw.ui.menu.NavHomePageActivity;
 import com.example.cay.vipmoviw.utils.ImgLoadUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -74,6 +78,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 drawerLayout.openDrawer(GravityCompat.START);
                 // 关闭
 //                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.ll_nav_homepage:// 主页
+                mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+                mBinding.drawerLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        NavHomePageActivity.startHome(MainActivity.this);
+                    }
+                }, 360);
+
+                break;
+
+            case R.id.ll_nav_scan_download://扫码下载
+                mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+                mBinding.drawerLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        NavDownloadActivity.start(MainActivity.this);
+                    }
+                }, 360);
+                break;
+            case R.id.ll_nav_deedback:// 问题反馈
+                mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+                mBinding.drawerLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        NavDeedBackActivity.start(MainActivity.this);
+                    }
+                }, 360);
+                break;
+            case R.id.ll_nav_about:// 关于云阅
+                mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+                mBinding.drawerLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        NavAboutActivity.start(MainActivity.this);
+                    }
+                }, 360);
+                break;
+            default:
                 break;
         }
     }
