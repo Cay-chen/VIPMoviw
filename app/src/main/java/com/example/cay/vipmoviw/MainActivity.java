@@ -2,9 +2,12 @@ package com.example.cay.vipmoviw;
 
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -19,18 +22,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView llTitleDou;
 
     private NavigationView navView;
+    private FrameLayout llTitleMenu;
+    private DrawerLayout drawerLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-      mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initVivws();
         initDrawerLayout();
+        initListener();
     }
 
     private void initVivws() {
         navView = mBinding.navView;
+        llTitleMenu = mBinding.include.llTitleMenu;
+        drawerLayout = mBinding.drawerLayout;
+
+    }
+
+    private void initListener() {
+        llTitleMenu.setOnClickListener(this);
 
     }
 
@@ -56,6 +69,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.ll_title_menu:// 开启菜单
+                drawerLayout.openDrawer(GravityCompat.START);
+                // 关闭
+//                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+        }
     }
 }
