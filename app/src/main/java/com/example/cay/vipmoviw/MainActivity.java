@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.cay.vipmoviw.databinding.ActivityMainBinding;
+import com.example.cay.vipmoviw.utils.ImgLoadUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     // 一定需要对应的bean
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        LinearLayout viewById1 = (LinearLayout) headerView.findViewById(R.id.ll_header_bg);
 //        viewById1.setBackground();
         ImageView ivAvatar = (ImageView) headerView.findViewById(R.id.iv_avatar);
-       // ImgLoadUtil.displayCircle(ivAvatar, R.drawable.ic_avatar);
+        ImgLoadUtil.displayCircle(ivAvatar, R.drawable.ic_avatar);
         LinearLayout llNavHomepage = (LinearLayout) headerView.findViewById(R.id.ll_nav_homepage);
         LinearLayout llNavScanDownload = (LinearLayout) headerView.findViewById(R.id.ll_nav_scan_download);
         LinearLayout llNavDeedback = (LinearLayout) headerView.findViewById(R.id.ll_nav_deedback);
