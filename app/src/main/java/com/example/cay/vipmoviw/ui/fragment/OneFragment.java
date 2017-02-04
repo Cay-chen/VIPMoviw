@@ -21,7 +21,8 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showLoading();
+       // showLoading();
+        showContentView();
     }
 
 }

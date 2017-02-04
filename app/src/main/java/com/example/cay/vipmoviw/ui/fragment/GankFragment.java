@@ -22,7 +22,8 @@ public class GankFragment extends BaseFragment<FragmentGankBinding> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showLoading();
+       // showLoading();
+        showContentView();
     }
 
 }
