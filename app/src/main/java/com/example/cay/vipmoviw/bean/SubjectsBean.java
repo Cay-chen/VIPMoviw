@@ -21,6 +21,16 @@ public class SubjectsBean implements Serializable {
     private String synopsis;//剧情简介
     private String act;//主演
 
+
+
+    private String City;//diqu
+    public String getCity() {
+        return City;
+    }
+
+    public void setCity(String city) {
+        City = city;
+    }
     public String getUrl() {
         return url;
     }
@@ -98,6 +108,7 @@ public class SubjectsBean implements Serializable {
                 ", num=" + num +
                 ", synopsis='" + synopsis + '\'' +
                 ", act='" + act + '\'' +
+                ", City='" + City + '\'' +
                 '}';
     }
 }

@@ -49,7 +49,7 @@ import rx.subscriptions.CompositeSubscription;
  * 根布局：fitsSystemWindows 惹的祸
  */
 public abstract class BaseHeaderActivity<HV extends ViewDataBinding, SV extends ViewDataBinding> extends AppCompatActivity {
-
+    private static final String TAG = "Cay";
     // 标题
     protected BaseHeaderTitleBarBinding bindingTitleView;
     // 内容布局头部
@@ -276,7 +276,7 @@ public abstract class BaseHeaderActivity<HV extends ViewDataBinding, SV extends 
      */
     private void setImgHeaderBg(String imgUrl) {
         if (!TextUtils.isEmpty(imgUrl)) {
-
+            Log.i(TAG, "setImgHeaderBg: "+imgUrl);
             // 高斯模糊背景 原来 参数：12,5  23,4
             Glide.with(this).load(imgUrl)
                     .error(R.drawable.stackblur_default)

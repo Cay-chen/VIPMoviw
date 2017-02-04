@@ -35,13 +35,13 @@ public class OneAdapter extends BaseQuickAdapter<SubjectsBean,BaseViewHolder> {
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, final SubjectsBean item) {
+    protected void convert(final BaseViewHolder helper, final SubjectsBean item) {
                 helper.setText(R.id.tv_one_title,item.getmName())
                         .setText(R.id.tv_one_directors,item.getDirector())
                         .setText(R.id.tv_one_casts,item.getAct())
-                        .setText(R.id.tv_one_genres,context.getResources().getString(R.string.neixing)+item.getType())
+                        .setText(R.id.tv_one_genres,context.getResources().getString(R.string.string_type)+item.getType())
                         .setBackgroundColor(R.id.view_color, CommonUtils.randomColor())
-                        .setText(R.id.tv_one_rating_rate,context.getResources().getString(R.string.pingfen)+item.getScore());
+                        .setText(R.id.tv_one_rating_rate,context.getResources().getString(R.string.string_rating)+item.getScore());
         mImageView =helper.getView(R.id.iv_one_photo);
         Glide.with(context).load(item.getUrl()).crossFade().into(mImageView);
 
@@ -53,7 +53,8 @@ public class OneAdapter extends BaseQuickAdapter<SubjectsBean,BaseViewHolder> {
         mLinearLayout.setOnClickListener(new PerfectClickListener() {
             @Override
             protected void onNoDoubleClick(View v) {
-                OneMovieDetailActivity.start((Activity) context, item,mImageView);
+            OneMovieDetailActivity.start((Activity) context, item,mImageView);
+
             }
         });
 

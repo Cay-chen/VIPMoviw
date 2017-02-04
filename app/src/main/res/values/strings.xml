@@ -11,8 +11,8 @@
         \n\n 项目完全开源，如果你觉得不错，请帮忙Star一下吧，或帮忙分享给你的朋友，这是给我们最大的动力与支持，非常感谢！
         </string>
     <string name="actionbar_more">更多信息</string>
-    <string name="neixing">类型：</string>
-    <string name="pingfen">评分：</string>
+<string name="movie_year">上映日期：</string>
+<string name="movie_city">制片国家/地区：</string>
     <string name="string_type">类型：</string>
 
     <string name="string_rating">评分：</string>
