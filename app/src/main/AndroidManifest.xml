@@ -39,6 +39,11 @@
             android:name=".ui.menu.NavAboutActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.menu.NavDownloadActivity" />
+        <activity
+            android:name=".activity.OneMovieDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyScrollPage" />
+
     </application>
 
 </manifest>
