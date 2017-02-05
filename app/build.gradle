@@ -37,5 +37,5 @@ dependencies {
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.8.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
-
+    compile project(':vitamio2')
 }

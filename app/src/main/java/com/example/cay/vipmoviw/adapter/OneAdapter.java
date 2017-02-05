@@ -2,7 +2,6 @@ package com.example.cay.vipmoviw.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
@@ -29,6 +28,7 @@ import java.util.List;
 public class OneAdapter extends BaseQuickAdapter<SubjectsBean,BaseViewHolder> {
     private ImageView mImageView;
     private Context context;
+    private ImageView mImageView1;
     public OneAdapter(int layoutResId, List data, Context context) {
         super(layoutResId, data);
         this.context = context;
@@ -42,7 +42,7 @@ public class OneAdapter extends BaseQuickAdapter<SubjectsBean,BaseViewHolder> {
                         .setText(R.id.tv_one_genres,context.getResources().getString(R.string.string_type)+item.getType())
                         .setBackgroundColor(R.id.view_color, CommonUtils.randomColor())
                         .setText(R.id.tv_one_rating_rate,context.getResources().getString(R.string.string_rating)+item.getScore());
-        mImageView =helper.getView(R.id.iv_one_photo);
+                        mImageView =helper.getView(R.id.iv_one_photo);
         Glide.with(context).load(item.getUrl()).crossFade().into(mImageView);
 
         ViewHelper.setScaleX(helper.itemView,0.8f);
@@ -53,7 +53,8 @@ public class OneAdapter extends BaseQuickAdapter<SubjectsBean,BaseViewHolder> {
         mLinearLayout.setOnClickListener(new PerfectClickListener() {
             @Override
             protected void onNoDoubleClick(View v) {
-            OneMovieDetailActivity.start((Activity) context, item,mImageView);
+                mImageView1=helper.getView(R.id.iv_one_photo);
+            OneMovieDetailActivity.start((Activity) context, item,mImageView1);
 
             }
         });

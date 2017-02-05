@@ -20,8 +20,24 @@ public class SubjectsBean implements Serializable {
     private int num;//级数
     private String synopsis;//剧情简介
     private String act;//主演
+    private String movieUrl;//电影地址
+    private String otherNmae;//又名
 
+    public String getOtherNmae() {
+        return otherNmae;
+    }
 
+    public void setOtherNmae(String otherNmae) {
+        this.otherNmae = otherNmae;
+    }
+
+    public String getMovieUrl() {
+        return movieUrl;
+    }
+
+    public void setMovieUrl(String movieUrl) {
+        this.movieUrl = movieUrl;
+    }
 
     private String City;//diqu
     public String getCity() {
@@ -96,19 +112,5 @@ public class SubjectsBean implements Serializable {
         this.act = act;
     }
 
-    @Override
-    public String toString() {
-        return "SubjectsBean{" +
-                "url='" + url + '\'' +
-                ", mName='" + mName + '\'' +
-                ", director='" + director + '\'' +
-                ", type='" + type + '\'' +
-                ", score='" + score + '\'' +
-                ", year='" + year + '\'' +
-                ", num=" + num +
-                ", synopsis='" + synopsis + '\'' +
-                ", act='" + act + '\'' +
-                ", City='" + City + '\'' +
-                '}';
-    }
+
 }
