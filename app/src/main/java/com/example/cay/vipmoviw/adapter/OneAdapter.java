@@ -12,7 +12,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.activity.OneMovieDetailActivity;
-import com.example.cay.vipmoviw.bean.SubjectsBean;
+import com.example.cay.vipmoviw.bean.MovieDataBean;
+
 import com.example.cay.vipmoviw.utils.CommonUtils;
 import com.example.cay.vipmoviw.utils.PerfectClickListener;
 import com.nineoldandroids.view.ViewHelper;
@@ -25,7 +26,7 @@ import java.util.List;
  * Created by jingbin on 2016/11/25.
  */
 
-public class OneAdapter extends BaseQuickAdapter<SubjectsBean,BaseViewHolder> {
+public class OneAdapter extends BaseQuickAdapter<MovieDataBean,BaseViewHolder> {
     private ImageView mImageView;
     private Context context;
     private ImageView mImageView1;
@@ -35,15 +36,15 @@ public class OneAdapter extends BaseQuickAdapter<SubjectsBean,BaseViewHolder> {
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, final SubjectsBean item) {
-                helper.setText(R.id.tv_one_title,item.getmName())
+    protected void convert(final BaseViewHolder helper, final MovieDataBean item) {
+                helper.setText(R.id.tv_one_title,item.getName())
                         .setText(R.id.tv_one_directors,item.getDirector())
                         .setText(R.id.tv_one_casts,item.getAct())
-                        .setText(R.id.tv_one_genres,context.getResources().getString(R.string.string_type)+item.getType())
+                        .setText(R.id.tv_one_genres,context.getResources().getString(R.string.string_type)+item.getMovie_type())
                         .setBackgroundColor(R.id.view_color, CommonUtils.randomColor())
-                        .setText(R.id.tv_one_rating_rate,context.getResources().getString(R.string.string_rating)+item.getScore());
+                        .setText(R.id.tv_one_rating_rate,context.getResources().getString(R.string.string_rating)+item.getCode());
                         mImageView =helper.getView(R.id.iv_one_photo);
-        Glide.with(context).load(item.getUrl()).crossFade().into(mImageView);
+        Glide.with(context).load(item.getImg_url()).crossFade().into(mImageView);
 
         ViewHelper.setScaleX(helper.itemView,0.8f);
         ViewHelper.setScaleY(helper.itemView,0.8f);

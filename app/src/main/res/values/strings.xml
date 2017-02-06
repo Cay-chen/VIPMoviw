@@ -43,5 +43,12 @@
     <string name="string_everyday_empty">暂时没有更新内容，去看看其他信息吧~</string>
     <string name="string_share_text">发现了一个高仿网易云音乐的App，里面有大量IT干货，每天提供安卓，IOS等最新资讯，还有最新电影热映榜和大量书籍信息，大力推荐哦~：https://fir.im/cloudreader</string>
 
+    <!--国家-->
+    <string name="USA" >美国</string>
+    <string name="CHA">中国</string>
+    <string name="THA">泰国</string>
+    <string name="HK">香港</string>
+    <string name="KOR">韩国</string>
+    <string name="JAP">日本</string>
 
 </resources>

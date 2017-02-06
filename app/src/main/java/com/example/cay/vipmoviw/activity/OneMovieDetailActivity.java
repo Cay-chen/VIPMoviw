@@ -14,7 +14,9 @@ import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.adapter.MovieCountItemAdapter;
 import com.example.cay.vipmoviw.base.BaseHeaderActivity;
 import com.example.cay.vipmoviw.bean.MovieBean;
-import com.example.cay.vipmoviw.bean.SubjectsBean;
+import com.example.cay.vipmoviw.bean.MovieDataBean;
+
+import com.example.cay.vipmoviw.data.Utils;
 import com.example.cay.vipmoviw.databinding.ActivityOneMovieDetailBinding;
 import com.example.cay.vipmoviw.databinding.HeaderSlideShapeBinding;
 import com.example.cay.vipmoviw.utils.CommonUtils;
@@ -30,7 +32,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
  */
 public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeBinding, ActivityOneMovieDetailBinding> {
     private static final String TAG = "Cay";
-    private SubjectsBean subjectsBean;
+    private MovieDataBean subjectsBean;
     private String mMoreUrl;
     private String mMovieName;
 
@@ -39,43 +41,43 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_movie_detail);
         if (getIntent() != null) {
-            subjectsBean = (SubjectsBean) getIntent().getSerializableExtra("bean");
+            subjectsBean = (MovieDataBean) getIntent().getSerializableExtra("bean");
         }
-        Log.i(TAG, "subjectsBean: " + subjectsBean.getmName());
+        Log.i(TAG, "subjectsBean: " + subjectsBean.getName());
         showContentView();
         initSlideShapeTheme(setHeaderImgUrl(), setHeaderImageView());
 
-        setTitle(subjectsBean.getmName());
+        setTitle(subjectsBean.getName());
         setSubTitle(String.format("主演：%s", subjectsBean.getAct()));
         bindingHeaderView.executePendingBindings();
-        Glide.with(this).load(subjectsBean.getUrl()).bitmapTransform(new BlurTransformation(this, 23, 4)).into(bindingHeaderView.imgItemBg);
-        Glide.with(this).load(subjectsBean.getUrl()).into(bindingHeaderView.ivOnePhoto);
-        bindingHeaderView.tvOneRatingRate.setText(this.getResources().getString(R.string.string_rating) + subjectsBean.getScore());
+        Glide.with(this).load(subjectsBean.getImg_url()).bitmapTransform(new BlurTransformation(this, 23, 4)).into(bindingHeaderView.imgItemBg);
+        Glide.with(this).load(subjectsBean.getImg_url()).into(bindingHeaderView.ivOnePhoto);
+        bindingHeaderView.tvOneRatingRate.setText(this.getResources().getString(R.string.string_rating) + subjectsBean.getCode());
         bindingHeaderView.tvOneCasts.setText(subjectsBean.getAct());
         bindingHeaderView.tvOneDirectors.setText(subjectsBean.getDirector());
         bindingHeaderView.tvOneDay.setText(this.getResources().getString(R.string.movie_year) + subjectsBean.getYear());
-        bindingHeaderView.tvOneCity.setText(this.getResources().getString(R.string.movie_city) + subjectsBean.getCity());
-        bindingHeaderView.tvOneGenres.setText(this.getResources().getString(R.string.string_type) + subjectsBean.getType());
-        bindingContentView.tvOneContiont.setText(subjectsBean.getSynopsis());
-        bindingContentView.tvOneTitle.setText(subjectsBean.getOtherNmae());
+        bindingHeaderView.tvOneCity.setText(this.getResources().getString(R.string.movie_city) + Utils.country(Integer.parseInt(subjectsBean.getCity()),this) );
+        bindingHeaderView.tvOneGenres.setText(this.getResources().getString(R.string.string_type) + subjectsBean.getMovie_type());
+        bindingContentView.tvOneContiont.setText(subjectsBean.getLog());
+        bindingContentView.tvOneTitle.setText(subjectsBean.getOther_name());
         setMovieCount();
     }
 
     private void setMovieCount() {
         List<MovieBean> mList = new ArrayList<>();
-        if (subjectsBean.getNum() > 1) {
-            for (int i = 1; i <= subjectsBean.getNum(); i++) {
+        if (subjectsBean.getType().equals("1")) {
+            for (int i = 1; i <= Integer.parseInt(subjectsBean.getNum() ); i++) {
                 MovieBean bean = new MovieBean();
                 bean.setItemName("第" + String.valueOf(i) + "集");
-                bean.setMovieUrl(subjectsBean.getMovieUrl());
-                bean.setMovieName(subjectsBean.getmName() + " 第" + String.valueOf(i) + "集");
+                bean.setMovieUrl("http://192.168.0.229:8081/movie/"+subjectsBean.getMovie_url()+"/"+i+".mp4");
+                bean.setMovieName(subjectsBean.getName() + " 第" + String.valueOf(i) + "集");
                 mList.add(bean);
             }
         } else {
             MovieBean bean = new MovieBean();
             bean.setItemName("高清中字");
-            bean.setMovieUrl(subjectsBean.getMovieUrl());
-            bean.setMovieName(subjectsBean.getmName());
+            bean.setMovieUrl("http://192.168.0.229:8081/movie/"+subjectsBean.getMovie_url()+".mp4");
+            bean.setMovieName(subjectsBean.getName());
             mList.add(bean);
         }
         bindingContentView.rvCast.setLayoutManager(new GridLayoutManager(this, 4));
@@ -97,8 +99,7 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
         if (subjectsBean == null) {
             return "";
         }
-        Log.i(TAG, "setHeaderImgUrl: " + subjectsBean.getUrl());
-        return subjectsBean.getUrl();
+        return subjectsBean.getImg_url();
     }
 
     @Override
@@ -107,7 +108,7 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
     }
 
 
-    public static void start(Activity context, SubjectsBean positionData, ImageView imageView) {
+    public static void start(Activity context, MovieDataBean positionData, ImageView imageView) {
         Intent intent = new Intent(context, OneMovieDetailActivity.class);
         intent.putExtra("bean", positionData);
         ActivityOptionsCompat options =

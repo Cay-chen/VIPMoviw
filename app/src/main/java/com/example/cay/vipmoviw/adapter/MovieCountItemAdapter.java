@@ -7,7 +7,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.bean.MovieBean;
-import com.example.cay.vipmoviw.bean.SubjectsBean;
+
 import com.example.cay.vipmoviw.player.PlayActivity;
 
 import java.util.List;
@@ -29,8 +29,8 @@ public class MovieCountItemAdapter extends BaseQuickAdapter<MovieBean,BaseViewHo
         helper.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String abc = String.valueOf(helper.getPosition()+1)+".mp4";
-                PlayActivity.actionStart(context,item.getMovieUrl()+abc,item.getMovieName());
+                //String abc = String.valueOf(helper.getPosition()+1)+".mp4";
+                PlayActivity.actionStart(context,item.getMovieUrl(),item.getMovieName());
             }
         });
     }

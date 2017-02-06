@@ -8,12 +8,24 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.cay.vipmoviw.MainActivity;
 import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.adapter.OneAdapter;
 import com.example.cay.vipmoviw.base.adapter.BaseFragment;
+import com.example.cay.vipmoviw.bean.MovieDataBean;
 import com.example.cay.vipmoviw.data.Moni;
 import com.example.cay.vipmoviw.databinding.FragmentOneBinding;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.Callback;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 public class OneFragment extends BaseFragment<FragmentOneBinding> {
 
@@ -46,17 +58,29 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showContentView();
         mRecyclerView = bindingView.listOne;
     //    aCache = ACache.get(getActivity());
         LinearLayoutManager manager = new LinearLayoutManager(activity);
         manager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
-       oneAdapter = new OneAdapter(R.layout.item_one1,Moni.hotMovieData(),activity);
-     //   mHotMovieBean = (HotMovieBean) aCache.getAsObject(Constants.ONE_HOT_MOVIE);
-        mRecyclerView.setAdapter(oneAdapter);
-        isPrepared = true;
-   //     DebugUtil.error("---OneFragment   --onActivityCreated");
+        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/Data").build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                List<MovieDataBean> movieDataBeen = JSON.parseArray(response, MovieDataBean.class);
+                oneAdapter = new OneAdapter(R.layout.item_one1,movieDataBeen,activity);
+                //   mHotMovieBean = (HotMovieBean) aCache.getAsObject(Constants.ONE_HOT_MOVIE);
+                mRecyclerView.setAdapter(oneAdapter);
+                isPrepared = true;
+                //     DebugUtil.error("---OneFragment   --onActivityCreated");
+                showContentView();
+            }
+        });
+
     }
 
 
