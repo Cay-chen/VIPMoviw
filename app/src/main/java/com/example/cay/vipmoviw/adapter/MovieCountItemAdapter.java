@@ -1,7 +1,6 @@
 package com.example.cay.vipmoviw.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;

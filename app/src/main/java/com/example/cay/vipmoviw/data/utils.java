@@ -1,10 +1,15 @@
 package com.example.cay.vipmoviw.data;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
 import com.example.cay.vipmoviw.R;
+import com.example.cay.vipmoviw.bean.MovieDataBean;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.List;
 
 import okhttp3.Call;
 
@@ -39,5 +44,23 @@ public class Utils {
         return  countryName;
     }
 
+    public static String getData(String position, RecyclerView recyclerView, List<MovieDataBean> list) {
+        String data=null;
+        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/Data").addParams("position",position).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
 
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                List<MovieDataBean> movieDataBeen = JSON.parseArray(response, MovieDataBean.class);
+               // list.addAll(movieDataBeen);
+               // data = response;
+            }
+        });
+
+        return null;
+
+    }
 }
