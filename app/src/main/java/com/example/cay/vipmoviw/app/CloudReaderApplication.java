@@ -3,6 +3,10 @@ package com.example.cay.vipmoviw.app;
 import android.app.Application;
 
 import com.example.cay.vipmoviw.http.HttpUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import okhttp3.Call;
 
 
 /**
@@ -10,7 +14,8 @@ import com.example.cay.vipmoviw.http.HttpUtils;
  */
 
 public class CloudReaderApplication extends Application {
-
+    private static String MOVIE_IP_URL = "http://60.205.183.88:8080/UpDataIp/servlet/MovieIp";
+    public static String ip = "";
     private static CloudReaderApplication cloudReaderApplication;
 
     public static CloudReaderApplication getInstance() {
@@ -31,5 +36,19 @@ public class CloudReaderApplication extends Application {
         super.onCreate();
         cloudReaderApplication = this;
         HttpUtils.getInstance().setContext(getApplicationContext());
+        movieIp();
+    }
+    public static void movieIp() {
+        OkHttpUtils.get().url(MOVIE_IP_URL).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                ip = response.trim();   //  trim() 出去两边空格
+            }
+        });
     }
 }

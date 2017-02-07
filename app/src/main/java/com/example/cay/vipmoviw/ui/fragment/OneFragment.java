@@ -11,6 +11,7 @@ import android.view.View;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.cay.vipmoviw.MainActivity;
 import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.adapter.OneAdapter;
@@ -63,7 +64,7 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> {
         LinearLayoutManager manager = new LinearLayoutManager(activity);
         manager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
-        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/Data").build().execute(new StringCallback() {
+        OkHttpUtils.get().url("http://60.205.183.88:8080/VMovie/Data").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
 
@@ -72,16 +73,30 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> {
             @Override
             public void onResponse(String response, int id) {
                 List<MovieDataBean> movieDataBeen = JSON.parseArray(response, MovieDataBean.class);
-                oneAdapter = new OneAdapter(R.layout.item_one1,movieDataBeen,activity);
-                //   mHotMovieBean = (HotMovieBean) aCache.getAsObject(Constants.ONE_HOT_MOVIE);
-                mRecyclerView.setAdapter(oneAdapter);
-                isPrepared = true;
-                //     DebugUtil.error("---OneFragment   --onActivityCreated");
+                setAdapter(movieDataBeen);
                 showContentView();
             }
         });
 
     }
 
+    public void setAdapter(List<MovieDataBean> data) {
+        oneAdapter = new OneAdapter(R.layout.item_one1,data,activity);
+        //   mHotMovieBean = (HotMovieBean) aCache.getAsObject(Constants.ONE_HOT_MOVIE);
+        mRecyclerView.setAdapter(oneAdapter);
+        isPrepared = true;
+        oneAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                mRecyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                },10000);
+            }
+        });
+        //     DebugUtil.error("---OneFragment   --onActivityCreated");
+    }
 
 }

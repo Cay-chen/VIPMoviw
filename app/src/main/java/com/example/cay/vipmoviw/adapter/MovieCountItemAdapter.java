@@ -1,6 +1,7 @@
 package com.example.cay.vipmoviw.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -29,7 +30,6 @@ public class MovieCountItemAdapter extends BaseQuickAdapter<MovieBean,BaseViewHo
         helper.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //String abc = String.valueOf(helper.getPosition()+1)+".mp4";
                 PlayActivity.actionStart(context,item.getMovieUrl(),item.getMovieName());
             }
         });

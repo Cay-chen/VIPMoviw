@@ -3,12 +3,17 @@ package com.example.cay.vipmoviw.data;
 import android.content.Context;
 
 import com.example.cay.vipmoviw.R;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import okhttp3.Call;
 
 /**
  * Created by Cay on 2017/2/6.
  */
 
 public class Utils {
+    private static boolean isIp = false;
     public static String country(int city, Context context) {
         String countryName =null;
         switch (city) {
@@ -33,4 +38,6 @@ public class Utils {
         }
         return  countryName;
     }
+
+
 }

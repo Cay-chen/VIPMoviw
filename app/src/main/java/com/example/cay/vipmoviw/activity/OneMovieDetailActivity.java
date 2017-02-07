@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.adapter.MovieCountItemAdapter;
+import com.example.cay.vipmoviw.app.CloudReaderApplication;
 import com.example.cay.vipmoviw.base.BaseHeaderActivity;
 import com.example.cay.vipmoviw.bean.MovieBean;
 import com.example.cay.vipmoviw.bean.MovieDataBean;
@@ -69,14 +70,15 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
             for (int i = 1; i <= Integer.parseInt(subjectsBean.getNum() ); i++) {
                 MovieBean bean = new MovieBean();
                 bean.setItemName("第" + String.valueOf(i) + "集");
-                bean.setMovieUrl("http://192.168.0.229:8081/movie/"+subjectsBean.getMovie_url()+"/"+i+".mp4");
+                movieIpTest();
+                bean.setMovieUrl("http://"+CloudReaderApplication.ip+":8081/movie/"+subjectsBean.getMovie_url()+"/"+i+".mp4");
                 bean.setMovieName(subjectsBean.getName() + " 第" + String.valueOf(i) + "集");
                 mList.add(bean);
             }
         } else {
             MovieBean bean = new MovieBean();
             bean.setItemName("高清中字");
-            bean.setMovieUrl("http://192.168.0.229:8081/movie/"+subjectsBean.getMovie_url()+".mp4");
+            bean.setMovieUrl("http://"+CloudReaderApplication.ip+":8081/movie/"+subjectsBean.getMovie_url()+".mp4");
             bean.setMovieName(subjectsBean.getName());
             mList.add(bean);
         }
@@ -84,6 +86,17 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
         bindingContentView.rvCast.setAdapter(new MovieCountItemAdapter(R.layout.movie_count_item, mList, this));
     }
 
+    /**
+     * 判断Ip是都获取到
+     */
+    public void movieIpTest() {
+        if (CloudReaderApplication.ip.isEmpty()) {
+            CloudReaderApplication.movieIp();
+            if (CloudReaderApplication.ip.isEmpty()) {
+                movieIpTest();
+            }
+        }
+    }
     @Override
     protected void setTitleClickMore() {
         WebViewActivity.loadUrl(OneMovieDetailActivity.this, mMoreUrl, mMovieName);
