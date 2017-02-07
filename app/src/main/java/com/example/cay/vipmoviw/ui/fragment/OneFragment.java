@@ -26,7 +26,7 @@ import java.util.List;
 import okhttp3.Call;
 
 public class OneFragment extends BaseFragment<FragmentOneBinding> implements BaseQuickAdapter.RequestLoadMoreListener,SwipeRefreshLayout.OnRefreshListener {
-
+private String getDataUri = "http://60.205.183.88:8080/VMovie/Data";
     // 初始化完成后加载数据
     private boolean isPrepared = false;
     // 第一次显示时加载数据，第二次不显示
@@ -62,16 +62,14 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> implements Bas
         LinearLayoutManager manager = new LinearLayoutManager(activity);
         manager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
-        firstLoadData();
-
-
+        initLoadData();
     }
 
     /**
      * 第一次加载数据
      */
-    public void firstLoadData() {
-        OkHttpUtils.get().url("http://60.205.183.88:8080/VMovie/Data").addParams("position","0").addParams("num","10").build().execute(new StringCallback() {
+    public void initLoadData() {
+        OkHttpUtils.get().url(getDataUri).addParams("position","0").addParams("num","10").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
 
@@ -90,33 +88,45 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> implements Bas
         oneAdapter.setOnLoadMoreListener(this);
         oneAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mRecyclerView.setAdapter(oneAdapter);
+        if (data.size() < 10) {
+            oneAdapter.loadMoreEnd(true);
+        }
 
     }
 
 
     @Override
     public void onLoadMoreRequested() {
-        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/Data").addParams("position","2").build().execute(new StringCallback() {
+        mRecyclerView.postDelayed(new Runnable() {
             @Override
-            public void onError(Call call, Exception e, int id) {
+            public void run() {
+                OkHttpUtils.get().url(getDataUri).addParams("position", String.valueOf(oneAdapter.getData().size())).addParams("num","10").build().execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        oneAdapter.loadMoreFail();
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        List<MovieDataBean> list = JSON.parseArray(response, MovieDataBean.class);
+                        oneAdapter.addData(list);
+                        oneAdapter.loadMoreComplete();
+                        if (list.size() < 5) {oneAdapter.loadMoreEnd(false);
+                        }
+                    }
+                });
             }
+        },1000);
 
-            @Override
-            public void onResponse(String response, int id) {
-                 List<MovieDataBean> list = JSON.parseArray(response, MovieDataBean.class);
-                 list.addAll(mList);
-                oneAdapter.setNewData(mList);
-            }
-        });
     }
 
     @Override
     public void onRefresh() {
         oneAdapter.setEnableLoadMore(false);
-        OkHttpUtils.get().url("http://60.205.183.88:8080/VMovie/Data").addParams("position","0").addParams("num","10").build().execute(new StringCallback() {
+        OkHttpUtils.get().url(getDataUri).addParams("position","0").addParams("num","10").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                oneAdapter.loadMoreFail();
 
             }
 
