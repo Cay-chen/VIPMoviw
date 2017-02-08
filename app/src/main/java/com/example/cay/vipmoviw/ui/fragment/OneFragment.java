@@ -9,6 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -72,7 +76,7 @@ private String getDataUri = "http://60.205.183.88:8080/VMovie/Data";
         OkHttpUtils.get().url(getDataUri).addParams("position","0").addParams("num","10").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-
+                initLoadData();
             }
 
             @Override
@@ -86,14 +90,20 @@ private String getDataUri = "http://60.205.183.88:8080/VMovie/Data";
     private void initAdapter(List<MovieDataBean> data) {
         oneAdapter = new OneAdapter(R.layout.item_one1,data,activity);
         oneAdapter.setOnLoadMoreListener(this);
-        oneAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+      //  oneAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mRecyclerView.setAdapter(oneAdapter);
+        addHeadView();
         if (data.size() < 10) {
             oneAdapter.loadMoreEnd(true);
         }
 
     }
+    private void addHeadView() {
+        View headView = activity.getLayoutInflater().inflate(R.layout.header_item_one, (ViewGroup) mRecyclerView.getParent(), false);
+        ((TextView) headView.findViewById(R.id.header_title)).setText("所有电影");
 
+        oneAdapter.addHeaderView(headView);
+    }
 
     @Override
     public void onLoadMoreRequested() {
@@ -126,7 +136,8 @@ private String getDataUri = "http://60.205.183.88:8080/VMovie/Data";
         OkHttpUtils.get().url(getDataUri).addParams("position","0").addParams("num","10").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                oneAdapter.loadMoreFail();
+                mSwipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(activity,"刷新失败",Toast.LENGTH_LONG).show();
 
             }
 
