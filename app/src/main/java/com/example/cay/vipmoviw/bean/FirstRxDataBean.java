@@ -1,14 +1,6 @@
-package com.example.cay.vipmoviw.base.adapter;
+package com.example.cay.vipmoviw.bean;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
-
-/**
- * https://github.com/CymChad/BaseRecyclerViewAdapterHelper
- */
-public class MultipleItem implements MultiItemEntity {
-   public static final int ONE = 1;
-   public static final int TWO = 2;
-    public static final int TRE = 3;
+public class FirstRxDataBean {
     private int type;
     private String img1;
     private String mid1;
@@ -22,22 +14,6 @@ public class MultipleItem implements MultiItemEntity {
     private String g_type;
     private String title;
     private boolean isTitle;
-
-    public MultipleItem(int type, String img1, String mid1, String con1, String img2, String mid2, String con2, String img3, String mid3, String con3, String g_type, String title, boolean isTitle) {
-        this.type = type;
-        this.img1 = img1;
-        this.mid1 = mid1;
-        this.con1 = con1;
-        this.img2 = img2;
-        this.mid2 = mid2;
-        this.con2 = con2;
-        this.img3 = img3;
-        this.mid3 = mid3;
-        this.con3 = con3;
-        this.g_type = g_type;
-        this.title = title;
-        this.isTitle = isTitle;
-    }
 
     public boolean getIsTitle() {return isTitle;
     }
@@ -140,7 +116,21 @@ public class MultipleItem implements MultiItemEntity {
     }
 
     @Override
-    public int getItemType() {
-        return type;
+    public String toString() {
+        return "FirstRxDataBean{" +
+                "type=" + type +
+                ", img1='" + img1 + '\'' +
+                ", mid1='" + mid1 + '\'' +
+                ", con1='" + con1 + '\'' +
+                ", img2='" + img2 + '\'' +
+                ", mid2='" + mid2 + '\'' +
+                ", con2='" + con2 + '\'' +
+                ", img3='" + img3 + '\'' +
+                ", mid3='" + mid3 + '\'' +
+                ", con3='" + con3 + '\'' +
+                ", g_type='" + g_type + '\'' +
+                ", title='" + title + '\'' +
+                ", isTitle=" + isTitle +
+                '}';
     }
 }

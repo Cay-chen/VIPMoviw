@@ -7,17 +7,23 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.example.cay.vipmoviw.MainActivity;
 import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.adapter.EveryDayAdapter;
 import com.example.cay.vipmoviw.base.GlideImageLoader;
 import com.example.cay.vipmoviw.base.adapter.BaseFragment;
+import com.example.cay.vipmoviw.base.adapter.MultipleItem;
+import com.example.cay.vipmoviw.bean.FirstRxDataBean;
+import com.example.cay.vipmoviw.bean.MovieDataBean;
 import com.example.cay.vipmoviw.data.Moni;
 import com.example.cay.vipmoviw.databinding.FooterItemEverydayBinding;
 import com.example.cay.vipmoviw.databinding.FragmentEverydayBinding;
@@ -25,9 +31,14 @@ import com.example.cay.vipmoviw.databinding.HeaderItemEverydayBinding;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerClickListener;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * 每日推荐
@@ -60,7 +71,9 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
     private MainActivity activity;
     private Banner mBanner;
     private List<String> image_url;
-    private List<String> titles ;
+    private List<String> titles;
+    private List<FirstRxDataBean> mList;
+    private List<MultipleItem> mmList;
 
     @Override
     public int setContent() {
@@ -90,18 +103,49 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
         mFooterBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_item_everyday, null, false);
         mHeaderView = mHeaderBinding.getRoot();
         mFooterView = mFooterBinding.getRoot();
+        initRecyulerView();
+        initFirstData();
+
+        initData();
+        initBanner();
+
+    }
+
+    private void initRecyulerView() {
         mRecyclerView = bindingView.xrvEveryday;
-        mEveryDayAdapter = new EveryDayAdapter(getContext(), Moni.everyDayData());
         LinearLayoutManager manager = new LinearLayoutManager(activity);
         manager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(mEveryDayAdapter);
-        mEveryDayAdapter.addHeaderView(mHeaderView);
-        mEveryDayAdapter.addFooterView(mFooterView);
-        mRecyclerView.setVisibility(View.VISIBLE);
-        bindingView.llLoading.setVisibility(View.GONE);
-        initData();
-        initBanner();
+// 需加，不然滑动不流畅
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setHasFixedSize(false);
+    }
+
+    private void initFirstData() {
+        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/FirstRxDataServer").build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                initFirstData();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.i(TAG, "onResponse: " + response);
+                mList = JSON.parseArray(response, FirstRxDataBean.class);
+                mmList = new ArrayList<MultipleItem>();
+                for (int i = 0; i < mList.size(); i++) {
+                    FirstRxDataBean bean = mList.get(i);
+                    mmList.add(new MultipleItem(bean.getType(), bean.getImg1(), bean.getMid1(), bean.getCon1(), bean.getImg2(), bean.getMid2(), bean.getCon2(), bean.getImg3(), bean.getMid3(), bean.getCon3(), bean.getG_type(), bean.getTitle(), bean.getIsTitle()));
+                }
+                mEveryDayAdapter = new EveryDayAdapter(getContext(), mmList);
+                mEveryDayAdapter.addHeaderView(mHeaderView);
+                mEveryDayAdapter.addFooterView(mFooterView);
+                mRecyclerView.setAdapter(mEveryDayAdapter);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                bindingView.llLoading.setVisibility(View.GONE);
+            }
+        });
+
 
     }
 
@@ -136,8 +180,15 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
         mBanner.setDelayTime(5000);
         //设置指示器位置（当banner模式中有指示器时）
         mBanner.setIndicatorGravity(BannerConfig.RIGHT);
+        mBanner.setOnBannerClickListener(new OnBannerClickListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                Toast.makeText(getContext(), "aaaa" + position, Toast.LENGTH_LONG).show();
+            }
+        });
         //banner设置方法全部调用完毕时最后调用
         mBanner.start();
+
     }
 
 

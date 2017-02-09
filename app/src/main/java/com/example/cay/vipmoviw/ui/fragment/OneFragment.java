@@ -30,7 +30,7 @@ import java.util.List;
 import okhttp3.Call;
 
 public class OneFragment extends BaseFragment<FragmentOneBinding> implements BaseQuickAdapter.RequestLoadMoreListener,SwipeRefreshLayout.OnRefreshListener {
-private String getDataUri = "http://60.205.183.88:8080/VMovie/Data";
+private String getDataUri = "http://192.168.0.227:8080/VMovie/Data";
     // 初始化完成后加载数据
     private boolean isPrepared = false;
     // 第一次显示时加载数据，第二次不显示

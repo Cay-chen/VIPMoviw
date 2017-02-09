@@ -9,50 +9,74 @@ import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.example.cay.vipmoviw.R;
 import com.example.cay.vipmoviw.adapter.MovieCountItemAdapter;
 import com.example.cay.vipmoviw.app.CloudReaderApplication;
 import com.example.cay.vipmoviw.base.BaseHeaderActivity;
+import com.example.cay.vipmoviw.base.adapter.MultipleItem;
 import com.example.cay.vipmoviw.bean.MovieBean;
 import com.example.cay.vipmoviw.bean.MovieDataBean;
 
+import com.example.cay.vipmoviw.bean.SubjectsBean;
 import com.example.cay.vipmoviw.data.Utils;
 import com.example.cay.vipmoviw.databinding.ActivityOneMovieDetailBinding;
 import com.example.cay.vipmoviw.databinding.HeaderSlideShapeBinding;
 import com.example.cay.vipmoviw.utils.CommonUtils;
 import com.example.cay.vipmoviw.webview.WebViewActivity;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
+import okhttp3.Call;
 
 /**
  * 继承基类而写的电影详情页 2016-12-13
  */
 public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeBinding, ActivityOneMovieDetailBinding> {
     private static final String TAG = "Cay";
-    private MovieDataBean subjectsBean;
-    private String mMoreUrl;
-    private String mMovieName;
-
+   // private MovieDataBean subjectsBean1;
+    private String id;
+    private String img_url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_movie_detail);
         if (getIntent() != null) {
-            subjectsBean = (MovieDataBean) getIntent().getSerializableExtra("bean");
+            id = getIntent().getStringExtra("id");
+            img_url = getIntent().getStringExtra("img_url");
+            // subjectsBean1 = (MovieDataBean) getIntent().getSerializableExtra("bean");
         }
-        Log.i(TAG, "subjectsBean: " + subjectsBean.getName());
-        showContentView();
-        initSlideShapeTheme(setHeaderImgUrl(), setHeaderImageView());
+        bindingHeaderView.executePendingBindings();
+        Glide.with(this).load(img_url).bitmapTransform(new BlurTransformation(this, 23, 4)).into(bindingHeaderView.imgItemBg);
+        Glide.with(this).load(img_url).into(bindingHeaderView.ivOnePhoto);
+        onLoadData(id);
+    }
 
+    private void onLoadData(String id) {
+        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/FindDataServer").addParams("type","id").addParams("value",id).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                List<MovieDataBean> list = JSON.parseArray(response, MovieDataBean.class);
+                setAllData(list.get(0));
+                showContentView();
+            }
+        });
+    }
+
+    private void setAllData(MovieDataBean subjectsBean) {
+        initSlideShapeTheme(setHeaderImgUrl(), setHeaderImageView());
         setTitle(subjectsBean.getName());
         setSubTitle(String.format("主演：%s", subjectsBean.getAct()));
-        bindingHeaderView.executePendingBindings();
-        Glide.with(this).load(subjectsBean.getImg_url()).bitmapTransform(new BlurTransformation(this, 23, 4)).into(bindingHeaderView.imgItemBg);
-        Glide.with(this).load(subjectsBean.getImg_url()).into(bindingHeaderView.ivOnePhoto);
         bindingHeaderView.tvOneRatingRate.setText(this.getResources().getString(R.string.string_rating) + subjectsBean.getCode());
         bindingHeaderView.tvOneCasts.setText(subjectsBean.getAct());
         bindingHeaderView.tvOneDirectors.setText(subjectsBean.getDirector());
@@ -61,10 +85,10 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
         bindingHeaderView.tvOneGenres.setText(this.getResources().getString(R.string.string_type) + subjectsBean.getMovie_type());
         bindingContentView.tvOneContiont.setText(subjectsBean.getLog());
         bindingContentView.tvOneTitle.setText(subjectsBean.getOther_name());
-        setMovieCount();
+        setMovieCount(subjectsBean);
     }
 
-    private void setMovieCount() {
+    private void setMovieCount(MovieDataBean subjectsBean) {
         List<MovieBean> mList = new ArrayList<>();
         if (subjectsBean.getType().equals("1")) {
             for (int i = 1; i <= Integer.parseInt(subjectsBean.getNum() ); i++) {
@@ -99,7 +123,7 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
     }
     @Override
     protected void setTitleClickMore() {
-        WebViewActivity.loadUrl(OneMovieDetailActivity.this, mMoreUrl, mMovieName);
+       // WebViewActivity.loadUrl(OneMovieDetailActivity.this, mMoreUrl, mMovieName);
     }
 
     @Override
@@ -109,10 +133,10 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
 
     @Override
     protected String setHeaderImgUrl() {
-        if (subjectsBean == null) {
+        if (img_url == null) {
             return "";
         }
-        return subjectsBean.getImg_url();
+        return img_url;
     }
 
     @Override
@@ -123,7 +147,17 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
 
     public static void start(Activity context, MovieDataBean positionData, ImageView imageView) {
         Intent intent = new Intent(context, OneMovieDetailActivity.class);
-        intent.putExtra("bean", positionData);
+        intent.putExtra("id", positionData.getId());
+        intent.putExtra("img_url",positionData.getImg_url());
+        ActivityOptionsCompat options =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(context,
+                        imageView, CommonUtils.getString(R.string.transition_movie_img));//与xml文件对应
+        ActivityCompat.startActivity(context, intent, options.toBundle());
+    }
+    public static void startE(Activity context, String id,String img_url,ImageView imageView) {
+        Intent intent = new Intent(context, OneMovieDetailActivity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("img_url",img_url);
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeSceneTransitionAnimation(context,
                         imageView, CommonUtils.getString(R.string.transition_movie_img));//与xml文件对应
