@@ -1,5 +1,6 @@
 package com.example.cay.vipmoviw.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -18,10 +19,12 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.example.cay.vipmoviw.MainActivity;
 import com.example.cay.vipmoviw.R;
+import com.example.cay.vipmoviw.activity.OneMovieDetailActivity;
 import com.example.cay.vipmoviw.adapter.EveryDayAdapter;
 import com.example.cay.vipmoviw.base.GlideImageLoader;
 import com.example.cay.vipmoviw.base.adapter.BaseFragment;
 import com.example.cay.vipmoviw.base.adapter.MultipleItem;
+import com.example.cay.vipmoviw.bean.BannerDataBean;
 import com.example.cay.vipmoviw.bean.FirstRxDataBean;
 import com.example.cay.vipmoviw.bean.MovieDataBean;
 import com.example.cay.vipmoviw.data.Moni;
@@ -36,6 +39,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Call;
@@ -70,8 +74,6 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
     private EveryDayAdapter mEveryDayAdapter;
     private MainActivity activity;
     private Banner mBanner;
-    private List<String> image_url;
-    private List<String> titles;
     private List<FirstRxDataBean> mList;
     private List<MultipleItem> mmList;
 
@@ -107,7 +109,7 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
         initFirstData();
 
         initData();
-        initBanner();
+
 
     }
 
@@ -122,7 +124,7 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
     }
 
     private void initFirstData() {
-        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/FirstRxDataServer").build().execute(new StringCallback() {
+        OkHttpUtils.get().url("http://60.205.183.88:8080/VMovie/FirstRxDataServer").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 initFirstData();
@@ -150,30 +152,39 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
     }
 
     private void initData() {
-        image_url = new ArrayList<>();
-        image_url.add("http://pic2.ooopic.com/12/32/19/90bOOOPIC39_1024.jpg");
-        image_url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486551464991&di=e9df5e9744a147c18a66118533e7be0a&imgtype=0&src=http%3A%2F%2Fimg.taopic.com%2Fuploads%2Fallimg%2F120302%2F6444-12030215322171.jpg");
-        image_url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486551464990&di=9690558e0ca491a797d09882074158b6&imgtype=0&src=http%3A%2F%2Fwww.llmlj.com%2Fbook_cover%2F274231.jpg");
-        image_url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1486551464988&di=ce3e093ffd678b1c70211a0cbe5c1649&imgtype=0&src=http%3A%2F%2Fuserimage7.360doc.com%2F16%2F0126%2F09%2F325810_201601260901140656803976.jpg");
-        titles = new ArrayList<>();
-        titles.add("迪克特·康伯巴奇");
-        titles.add("打垮夏洛克迫使他跳楼");
-        titles.add("《恶魔少爷别吻我》");
-        titles.add("航海王们为了");
+        OkHttpUtils.get().url("http://60.205.183.88:8080/VMovie/BannerDataServer").build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                BannerDataBean bannerDataBean = JSON.parseObject(response,BannerDataBean.class);
+                    String[] imgs = bannerDataBean.getImgs();
+                    String[] titles = bannerDataBean.getTitles();
+                    String[] movieIds = bannerDataBean.getMovieIds();
+                    String[] types = bannerDataBean.getTypes();
+                initBanner(imgs,titles,movieIds,types);
+            }
+        });
+
+
     }
 
-    private void initBanner() {
+    private void initBanner(final String[] img,String[] titles,String[] id,String[] type) {
+       final List<String> idList =Arrays.asList(id);
         mBanner = mHeaderBinding.banner;
         //设置banner样式
         mBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
         //设置图片加载器
         mBanner.setImageLoader(new GlideImageLoader());
         //设置图片集合
-        mBanner.setImages(image_url);
+        mBanner.setImages(Arrays.asList(img));
         //设置banner动画效果
         mBanner.setBannerAnimation(Transformer.Accordion);
         //设置标题集合（当banner样式有显示title时）
-        mBanner.setBannerTitles(titles);
+        mBanner.setBannerTitles(Arrays.asList(titles));
         //设置自动轮播，默认为true
         mBanner.isAutoPlay(true);
         //设置轮播时间
@@ -183,7 +194,8 @@ public class EverydayFragment extends BaseFragment<FragmentEverydayBinding> {
         mBanner.setOnBannerClickListener(new OnBannerClickListener() {
             @Override
             public void OnBannerClick(int position) {
-                Toast.makeText(getContext(), "aaaa" + position, Toast.LENGTH_LONG).show();
+                OneMovieDetailActivity.startE((Activity)getContext(), idList.get(position-1), Arrays.asList(img).get(position-1), null);
+
             }
         });
         //banner设置方法全部调用完毕时最后调用

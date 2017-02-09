@@ -1,6 +1,7 @@
 package com.example.cay.vipmoviw.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -58,7 +59,7 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
     }
 
     private void onLoadData(String id) {
-        OkHttpUtils.get().url("http://192.168.0.227:8080/VMovie/FindDataServer").addParams("type","id").addParams("value",id).build().execute(new StringCallback() {
+        OkHttpUtils.get().url("http://60.205.183.88:8080/VMovie/FindDataServer").addParams("type","id").addParams("value",id).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
 
@@ -154,14 +155,19 @@ public class OneMovieDetailActivity extends BaseHeaderActivity<HeaderSlideShapeB
                         imageView, CommonUtils.getString(R.string.transition_movie_img));//与xml文件对应
         ActivityCompat.startActivity(context, intent, options.toBundle());
     }
-    public static void startE(Activity context, String id,String img_url,ImageView imageView) {
+    public static void startE(Activity context, String id, String img_url, ImageView imageView) {
         Intent intent = new Intent(context, OneMovieDetailActivity.class);
         intent.putExtra("id", id);
         intent.putExtra("img_url",img_url);
-        ActivityOptionsCompat options =
-                ActivityOptionsCompat.makeSceneTransitionAnimation(context,
-                        imageView, CommonUtils.getString(R.string.transition_movie_img));//与xml文件对应
-        ActivityCompat.startActivity(context, intent, options.toBundle());
+        if (imageView != null) {
+            ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(context,
+                            imageView, CommonUtils.getString(R.string.transition_movie_img));//与xml文件对应
+            ActivityCompat.startActivity(context, intent, options.toBundle());
+        } else {
+            context.startActivity(intent);
+        }
+
     }
 
 }
